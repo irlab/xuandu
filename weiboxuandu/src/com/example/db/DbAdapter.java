@@ -63,6 +63,14 @@ public class DbAdapter {
 					+ ");";	
 			Log.i(TAG, weibo_sql);
 			db.execSQL(weibo_sql);
+			
+			String comment_sql = "CREATE TABLE " + CommentDbAdapter.TABLE_NAME + " (" 
+					+ CommentDbAdapter.id + " INTEGER primary key autoincrement, "
+					+ CommentDbAdapter.statusid + " INTEGER not null, "
+					+ CommentDbAdapter.jsonWeibo + " text"
+					+ ");";	
+			Log.i(TAG, comment_sql);
+			db.execSQL(comment_sql);
 			/*
 			
 			String user_sql = "CREATE_TABLE " + UserDbAdapter.TABLE_NAME + " (" 
@@ -101,8 +109,9 @@ public class DbAdapter {
 
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			db.execSQL("DROP TABLE IF EXISTS " + UserDbAdapter.TABLE_NAME + ";");
+			//db.execSQL("DROP TABLE IF EXISTS " + UserDbAdapter.TABLE_NAME + ";");
 			db.execSQL("DROP TABLE IF EXISTS " + WeiboDbAdapter.TABLE_NAME + ";");
+			db.execSQL("DROP TABLE IF EXISTS " + CommentDbAdapter.TABLE_NAME + ";");
 			onCreate(db);
 		}
 

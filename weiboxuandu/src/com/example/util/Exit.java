@@ -2,6 +2,7 @@ package com.example.util;
 
 import com.example.R;
 import com.example.logic.MainService;
+import com.example.ui.Login;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -15,7 +16,11 @@ public class Exit {
 					
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
+						
+						System.out.println(" hello world ...........................................................................................");
+						AccessTokenKeeper.clear(MyContext.getContext());
 						// TODO Auto-generated method stub
+						
 						MainService.exitAPP(context);
 						
 					}

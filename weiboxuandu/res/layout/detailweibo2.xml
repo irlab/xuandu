@@ -32,18 +32,17 @@ xmlns:android="http://schemas.android.com/apk/res/android" >
                 <ImageView android:id="@+id/tweet_upload_pic" android:visibility="gone" android:background="@drawable/detail_pic_bg"  android:layout_width="wrap_content" android:layout_height="wrap_content" 
                 android:layout_marginLeft="5.0dip" android:layout_marginTop="5.0dip" android:layout_marginRight="5.0dip" android:layout_marginBottom="5.0dip" android:src="@drawable/preview_pic_loading" android:scaleType="centerInside" android:maxWidth="120dip" android:maxHeight="120dip" android:minWidth="48.0dip" android:minHeight="33.0dip" android:layout_below="@id/vDevider" />
             
-               <RelativeLayout android:orientation="horizontal" android:id="@+id/rlTextDescBlock" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/tweet_upload_pic">
-<!--                     转发 -->
-<!--                     评论 -->
-                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/de" android:gravity="center" android:orientation="horizontal">
-                         <Button android:background="@drawable/detail_redirect"  android:layout_width="wrap_content" android:id="@+id/detail_redirect" android:layout_height="45dp" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_marginLeft="15dp"></Button>
-                         <Button android:background="@drawable/detail_comment1" android:layout_centerInParent="true" android:layout_width="wrap_content" android:id="@+id/detail_comment" android:layout_height="45dp" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/detail_redirect"></Button>
-                    </LinearLayout>  
-               </RelativeLayout>
+<!--                <RelativeLayout android:orientation="horizontal" android:id="@+id/rlTextDescBlock" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/tweet_upload_pic"> -->
+<!--                     <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content"  android:id="@+id/de" android:gravity="center" android:orientation="horizontal"> -->
+<!--                          <Button android:background="@drawable/detail_redirect"  android:layout_width="wrap_content" android:id="@+id/detail_redirect" android:layout_height="45dp" android:layout_alignParentTop="true" android:layout_alignParentLeft="true" android:layout_marginLeft="15dp"></Button> -->
+<!--                          <Button android:background="@drawable/detail_comment1" android:layout_centerInParent="true" android:layout_width="wrap_content" android:id="@+id/detail_comment" android:layout_height="45dp" android:layout_alignParentTop="true" android:layout_toRightOf="@+id/detail_redirect"></Button> -->
+<!--                     </LinearLayout>   -->
+<!--                </RelativeLayout> -->
 <!--                时间 -->
-               <TextView  android:textSize="14.0sp" android:textColor="#ff7d7d7d" android:id="@+id/tweet_updated" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+               <TextView  android:textSize="14.0sp" android:textColor="#ff7d7d7d" android:id="@+id/tweet_updated" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/tweet_upload_pic" />
 <!--                 来自 -->
-                 <TextView android:textSize="14.0sp" android:textStyle="bold" android:textColor="#ff7d7d7d" android:id="@+id/tweet_via" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_below="@id/rlTextDescBlock" />
+               <TextView android:textSize="14.0sp"  android:textColor="#ff7d7d7d" android:id="@+id/tweet_via" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_toRightOf = "@id/tweet_updated" android:layout_below="@id/tweet_upload_pic" />
             </RelativeLayout>
+            
         </RelativeLayout>
 </LinearLayout>

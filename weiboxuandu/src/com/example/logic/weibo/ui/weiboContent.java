@@ -3,6 +3,7 @@ package com.example.logic.weibo.ui;
 
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,14 +21,19 @@ import com.example.ui.Status;
 import com.example.ui.adapter.WeiboAdapter;
 import com.example.ui.adapter.commentAdapter;
 import com.example.ui.logic.imaCache.Anseylodar;
+import com.example.util.Utility;
 import com.example.util.WeiboUtil;
 import com.weibo.sdk.android.WeiboException;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
@@ -82,6 +88,8 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	TextView tvtitle;
 	Anseylodar anseylodar;
 	RelativeLayout tweet_profile;//
+	TextView tweet_updated;
+	TextView tweet_via;
 	//List<PostParameter> params;
 	//下面的5个按钮 刷新 评论 转发 收藏 更多
 	TextView tvReload,tvComment,tvForward,tvFav,tvMore;
@@ -107,6 +115,8 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			tweet_profile_name.setText(status.getUser().getScreenName());
 			//微博内容
 			tweet_message.setText(status.getText().toString());
+			tweet_via.setText("From:" + status.getSource().getName());
+			tweet_updated.setText(Utility.showTime(status.getCreatedAt()) + " ");
 			progress.setVisibility(View.GONE);
 			//这里把人头像的图片转换成了180*180尺寸的大图了
 			URL url=WeiboUtil.getString(status.getUser().getProfileImageURL());
@@ -125,7 +135,10 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			//获取转发内容和图片
 			try {
 				//又转发内容
-				tweet_oriTxt.setText(tweetstatus.getText().toString());
+				String text = "@" + tweetstatus.getUser().getScreenName() + ":";
+				SpannableString ss = new SpannableString(text + tweetstatus.getText());
+				ss.setSpan(new ForegroundColorSpan(Color.BLUE), 0, text.length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				tweet_oriTxt.setText(ss);
              //异步加载图片
 				anseylodar.showimgAnsy(tweet_upload_pic2, tweetstatus.getThumbnailPic());
 			} catch (Exception e) {
@@ -135,19 +148,6 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	
 	@Override
 	public void run() {
-		// 获取HomeActivity发来的数据
-		Intent data = getIntent();
-		System.out.println( data.getExtras().get("status") );
-		try {
-			status = new Status( new JSONObject( (String) data.getExtras().get("status") ) );
-			init();
-		} catch (WeiboException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		// 获取又转发内容
 		tweetstatus = status.getRetweetedStatus();
 		mHandler.sendEmptyMessage(0);
@@ -165,11 +165,11 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	protected void onStart() {
 		super.onStart();
 		
+		// 获取HomeActivity发来的数据
 		Intent data = getIntent();
 		System.out.println( data.getExtras().get("status") );
 		try {
 			status = new Status( new JSONObject( (String) data.getExtras().get("status") ) );
-		//	init();
 		} catch (WeiboException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -177,7 +177,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+	
 		initView(); // 初始化布局
     	MainService.allActivity.add(this);
     	init();
@@ -195,12 +195,16 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		View head = LayoutInflater.from(this).inflate(R.layout.detailweibo2, null);
 		
 		tweet_profile_preview = (ImageView) head.findViewById(R.id.tweet_profile_preview);
-		tweet_profile_preview.setClickable(false);
 		tweet_profile_name = (TextView) head.findViewById(R.id.tweet_profile_name);
 		tweet_message = (TextView) head.findViewById(R.id.tweet_message);
 	    tweet_upload_pic = (ImageView) head.findViewById(R.id.tweet_upload_pic);
 		tweet_oriTxt = (TextView) head.findViewById(R.id.tweet_oriTxt);
 		tweet_upload_pic2 = (ImageView) head.findViewById(R.id.tweet_upload_pic2);
+	//	comment_num = (TextView) head.findViewById(R.)
+	//	redirect_num = (TextView) head.findViewById(R.)
+//		TextView comment_num,redirect_num;//条数
+		tweet_updated = (TextView) head.findViewById(R.id.tweet_updated);
+		tweet_via = (TextView) head.findViewById(R.id.tweet_via);
 //		tvtitle = (TextView) head.findViewById(R.id.tvinfo);
 //		tvtitle.setText(R.string.weiboinfo);
 //			tvReload=(TextView) view.findViewById(R.id.tvReload);
@@ -208,9 +212,10 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 //			tvForward=(TextView) this.findViewById(R.id.tvForward);
 //			tvFav=(TextView) this.findViewById(R.id.tvFav);
 //			tvMore=(TextView) this.findViewById(R.id.tvMore);
-      tweet_profile = (RelativeLayout) head.findViewById(R.id.tweet_profile);
+		tweet_profile = (RelativeLayout) head.findViewById(R.id.tweet_profile);
       
-      tweetstatusview=(LinearLayout) head.findViewById(R.id.src_text_block);
+		tweetstatusview=(LinearLayout) head.findViewById(R.id.src_text_block);
+	
 			//底部菜单点击事件
 			//tvReload.setOnClickListener(new textclick());
 			//tvComment.setOnClickListener(new textclick());
@@ -231,8 +236,8 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		// 设置登陆用户名称
 		tvname.setText(MainService.nowuser.getScreenName());
 		// 写微博按钮
-		ImageView btwriteWeibo = (ImageView) title.findViewById(R.id.title_bt_left);
-		btwriteWeibo.setImageResource(R.drawable.title_back);
+		ImageView backWeibo = (ImageView) title.findViewById(R.id.title_bt_left);
+		backWeibo.setImageResource(R.drawable.title_back);
 		// 刷新按钮
 		btrefaush = (ImageView) title.findViewById(R.id.title_bt_right);
 		btrefaush.setImageResource(R.drawable.ic_btn_refresh);
@@ -241,6 +246,11 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		// 将bottom 添加到ListView中的底部
 		weibolist.addFooterView(bottom);
 		weibolist.addHeaderView(head);
+		
+		adapter = new commentAdapter(this, (List<Comment>) (new ArrayList<Comment>()) );
+		weibolist.setAdapter(adapter);
+		adapter.notifyDataSetChanged();
+		
 		moreweibo = (LinearLayout) bottom.findViewById(R.id.moreweibo);
 		loginprogress = this.findViewById(R.id.loginprogres);
 		// 点击底部更多布局
@@ -257,7 +267,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			}
 		});
 	
-		btwriteWeibo.setOnClickListener(new OnClickListener() {
+		backWeibo.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
@@ -291,12 +301,9 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	@Override
 	public void init() {
 		HashMap<String, String> param = new HashMap<String, String>();
-//		param.put("nowPage", Integer.valueOf(nowPage));
-//		param.put("pageSize", Integer.valueOf(pageSize));
-		param.put("ID", status.getId());
-		//param.put("", value);
 		
-		System.out.println("hotword___________________________________________init");
+		param.put("ID", status.getId());
+		
 		Task task = new Task(Task.TASK_GET_COMMENT, param);
 		
 	    MainService.allTask.add(task);
@@ -334,26 +341,20 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		int flag = ((Integer) param[0]).intValue();
 		switch(flag) {
 		case REFRESH_WEIBO:
-			System.out.println("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^");
 			btrefaush.setVisibility(View.GONE);
 			titleprogressBar.setVisibility(View.GONE);
 			if (nowPage == 1) {
-				//loginprogress.setVisibility(visibility)
 				loginprogress.setVisibility(View.GONE);
-				//System.out.println(param[1]);
+
 				List<Comment> nowStatus = (List<Comment>) param[1];
-				System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!comment data");
-				System.out.println("comment data " + nowStatus.size());
-				for(int i = 0; i < nowStatus.size(); i++) {
-					System.out.println("commnet data" + nowStatus.toString());
-				}
-				adapter = new commentAdapter(this, nowStatus);
-				weibolist.setAdapter(adapter);
+				
+				adapter.addmoreData(nowStatus);
 				adapter.notifyDataSetChanged();
 			}
 			else {
 				progressBar.setVisibility(View.GONE);
 				adapter.addmoreData((List<Comment>) param[1]);
+				adapter.notifyDataSetChanged();
 			}
 		}
 	}

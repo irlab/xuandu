@@ -6,9 +6,14 @@ import com.example.R;
 import com.example.logic.ui.util.ViewHolder;
 import com.example.ui.Status;
 import com.example.ui.logic.imaCache.Anseylodar;
+import com.example.util.Utility;
 
 
 import android.content.Context;
+import android.graphics.Color;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +90,7 @@ public class WeiboAdapter  extends  BaseAdapter{
 		vHolder.tvitemFrom.setText(" From: " + mstatus.getSource().getName());
 		//设定表发微博的时间
 		//mstatus
-		vHolder.tvitemTimeData.setText(mstatus.getCreatedAt().toLocaleString().substring(13, 19));
+		vHolder.tvitemTimeData.setText(Utility.showTime(mstatus.getCreatedAt()));
 		//加载用户头像
 		
 		String usericon=mstatus.getUser().getProfileImageURL().toString();
@@ -95,7 +100,13 @@ public class WeiboAdapter  extends  BaseAdapter{
 			vHolder.contentPic.setVisibility(View.GONE);
 			vHolder.subLayoutView.setVisibility(View.VISIBLE);//设置有转发布局可见
 		    Status comentsStatus=status.get(position).getRetweetedStatus();//获取又转发内容
-			vHolder.tvitemSubcontent.setText(comentsStatus.getText());
+			//vHolder.tvitemSubcontent.setText("@" + comentsStatus.getUser().getScreenName() + ":" + comentsStatus.getText());
+			String text = "@" + comentsStatus.getUser().getScreenName() + ":";
+			SpannableString ss = new SpannableString(text + comentsStatus.getText());
+			ss.setSpan(new ForegroundColorSpan(Color.BLUE), 0, text.length(),Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			vHolder.tvitemSubcontent.setText(ss);
+			
+			//vHolder.tvitemSubcontent
 		    String subconpic=comentsStatus.getThumbnailPic();
 		  //  comentsStatus.getThumbnailPic()
 		    if (null!=subconpic) {

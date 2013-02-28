@@ -30,6 +30,7 @@ public class Comment extends WeiboResponse  implements Serializable  {
 	private String text;                                 //微博内容
 	private Source source;                               //微博来源
 	private String __json;
+	private Status status;  // 原始微博
 	
 	public Comment() {
 	}
@@ -59,6 +60,8 @@ public class Comment extends WeiboResponse  implements Serializable  {
 				System.out.println(json.getJSONObject("user").toString());
 			}
 			
+			status = new Status(json.getString("status"));
+			
 		} catch (JSONException je) {
 			throw new WeiboException(je.getMessage() + ":" + json.toString(), je);
 		}
@@ -74,6 +77,14 @@ public class Comment extends WeiboResponse  implements Serializable  {
 		super();
 		JSONObject json = new JSONObject(str);
 		constructJson(json);
+	}
+	
+	public Status getStatus() {
+		return status;
+	}
+	
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	public User getUser() {

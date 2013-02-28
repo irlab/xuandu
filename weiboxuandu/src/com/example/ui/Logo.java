@@ -22,6 +22,8 @@ public class Logo extends Activity{
 		private ImageView logo;
 		@Override
 		protected void onCreate(Bundle savedInstanceState) {
+			
+		
 			Log.i("ani","logostarted");
 			super.onCreate(savedInstanceState);
 			//设置标题栏不可见

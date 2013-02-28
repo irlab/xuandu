@@ -234,6 +234,7 @@ public class MainService extends Service implements Runnable
 	 */
 	public static void AlertNetError(final Context  context) 
 	{
+		
 		// TODO Auto-generated method stub
 		AlertDialog.Builder alerError = new AlertDialog.Builder(context);
 		alerError.setTitle(R.string.main_fetch_fail);

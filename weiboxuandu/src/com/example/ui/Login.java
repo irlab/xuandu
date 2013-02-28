@@ -6,6 +6,7 @@ import com.example.logic.IWeiboActivity;
 import com.example.logic.MainService;
 import com.example.logic.Task;
 import com.example.util.AccessTokenKeeper;
+import com.example.util.MyContext;
 import com.example.util.WeiboUtil;
 import com.weibo.sdk.android.Oauth2AccessToken;
 import com.weibo.sdk.android.Weibo;
@@ -16,7 +17,9 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -49,6 +52,7 @@ public class Login extends Activity implements IWeiboActivity {
 	public  Dialog	 dialog;
 	public EditText editText;
     public static final int REFRESH_LOGIN=1;//  登录
+    public static Context context;
 	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +61,12 @@ public class Login extends Activity implements IWeiboActivity {
 		super.onCreate(savedInstanceState);
 		MainService.allActivity.add(this); // 将当前的activity 添加到Service 的 acitivity集合中
 		mWeibo = Weibo.getInstance(CONSUMER_KEY, REDIRECT_URL);
+
+		context = (MyContext)  this.getApplication();
 		
 		setContentView(R.layout.login);
-		AccessTokenKeeper.clear(this);
+		
+		
 		CookieSyncManager.createInstance(Login.this);
 		CookieManager.getInstance().removeAllCookie();
 		
@@ -69,15 +76,11 @@ public class Login extends Activity implements IWeiboActivity {
 				public void onClick(View v) {
 					System.out.println("***********************()()()()()()()()()()()*************************************");
 					System.out.println("exit_flag " + AccessTokenKeeper.exist_flag);
-					if( accessToken.getToken().isEmpty())
-					//if (accessToken.getToken() != null)
-					{
+					if( ! accessToken.isSessionValid() )  {
 						System.out.println("hello world   accessToken get Token");
 						mWeibo.authorize(Login.this, new AuthDialogListener());
 					}
-					else
-					{
-						accessToken = AccessTokenKeeper.readAccessToken(Login.this);
+					else  {
 						goHome();
 					}
 				}
@@ -87,10 +90,10 @@ public class Login extends Activity implements IWeiboActivity {
 	public void dialogshow(){
 		Log.i("token","on dialogshow");
 	    View dialogview=LayoutInflater.from(Login.this).inflate(R.layout.dialogshow, null);
-	    dialog=new Dialog(Login.this,R.style.oauthdialog);
+	    dialog= new Dialog(Login.this,R.style.oauthdialog);
 		dialog.setContentView(dialogview);
 		Button btstart=(Button)dialogview.findViewById(R.id.btn_start);
-		System.out.println("dialogshow..............");
+		
 		try {
 			dialog.show();
 		} catch (Exception e) {
@@ -111,7 +114,8 @@ public class Login extends Activity implements IWeiboActivity {
 			String token = values.getString("access_token");
 			String expires_in = values.getString("expires_in");
 			Login.accessToken = new Oauth2AccessToken(token, expires_in);
-			AccessTokenKeeper.keepAccessToken(Login.this, Login.accessToken);
+		//	SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+			AccessTokenKeeper.keepAccessToken(context, Login.accessToken);
 			Toast.makeText(Login.this,"token is  saved", Toast.LENGTH_SHORT).show();
 			
 			dialog.dismiss();// 要先关闭dialog 否则窗体会泄露
@@ -142,6 +146,7 @@ public class Login extends Activity implements IWeiboActivity {
 		// TODO Auto-generated method stub
 		Log.i("token","on resume");
 		super.onResume();
+		System.out.println("Login onResume");
 		init(); // 
 	}
 
@@ -154,12 +159,12 @@ public class Login extends Activity implements IWeiboActivity {
     	autologin.setOnCheckedChangeListener(new OnCheckedChangeListener() {
   			@Override
   			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-  				AccessTokenKeeper.savaautoLogin(Login.this, isChecked);
+  				AccessTokenKeeper.savaautoLogin(context, isChecked);
   			}
   		});
-        isautologin=AccessTokenKeeper.getauto(Login.this);
-		editText=(EditText) this.findViewById(R.id.user);
-		accessToken=AccessTokenKeeper.readAccessToken(this);
+        isautologin = AccessTokenKeeper.getauto(context);
+		editText = (EditText) this.findViewById(R.id.user);
+		accessToken = AccessTokenKeeper.readAccessToken(context);
 		
 		if (WeiboUtil.checkNet(Login.this)) 
 		{
@@ -175,12 +180,12 @@ public class Login extends Activity implements IWeiboActivity {
 				expirein=accessToken.getExpiresTime();
 			}
 			else
-			 {// 如果没有
+			{// 如果没有
 				dialogshow();// 弹出认证Dialog
 			}
 			// 
 		}
-	  else {
+	    else {
 		  	
 			MainService.AlertNetError(this);
 			
@@ -198,13 +203,13 @@ public class Login extends Activity implements IWeiboActivity {
     		if (pd!=null) {
     			pd.dismiss(); 
 			}
+    		
     		Intent it=new Intent(this, MainActivity.class);
     		this.startActivity(it);
     		MainService.allActivity.remove(this);
     		finish();
     		break;
-		}
-		
+		}	
 	}
 	@SuppressWarnings("unchecked")
 	public void goHome()	{

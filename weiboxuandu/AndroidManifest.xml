@@ -12,10 +12,12 @@
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" ></uses-permission>
      <uses-permission android:name="android.permission.INTERNET" ></uses-permission>
+<!--      <application android:name="com.example.util.MyContext" ></application> -->
   <application
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        theme="@android:style/Theme.Black.NoTitleBar"> 
+        theme="@android:style/Theme.Black.NoTitleBar"
+        android:name="com.example.util.MyContext"> 
        <activity android:name=".ui.Logo"
                   android:label="@string/app_name">
             <intent-filter>
@@ -34,7 +36,7 @@
        <activity android:name=".ui.SimilarTastesActivity" android:launchMode="singleTop"></activity>
        <activity android:name=".ui.CloseFriendsActivity" android:launchMode="singleTop"></activity>
        <activity android:name=".logic.weibo.ui.WeiboInfo" android:launchMode="singleTop"></activity>
-     
+      <activity android:name=".logic.weibo.ui.weiboContent" android:launchMode="singleTop"></activity>
         <!--  注册服务 -->
         <service  android:name=".logic.MainService" >
         <intent-filter >

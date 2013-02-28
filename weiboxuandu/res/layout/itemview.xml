@@ -29,14 +29,15 @@
 	  android:layout_toRightOf="@id/usericon" 
 		android:layout_width="fill_parent" android:orientation="vertical">
 		<LinearLayout android:orientation="vertical"
-			android:paddingLeft="15dp" android:paddingTop="5dp" android:id="@+id/lyRightLayout"
+
+			android:paddingTop="5dp" android:id="@+id/lyRightLayout"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
 			android:layout_margin="5.0dip">
 			<LinearLayout android:orientation="horizontal"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:layout_marginRight="3.0dip">
 				<!--昵称 -->
-				<TextView android:textSize="15.0sp" android:textColor="#ff333333"
+				<TextView android:textSize="14.0sp" android:textColor="#ff333333"
 					android:id="@+id/tvItemName" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:text="" />
 				<!--新浪认证 -->
@@ -72,6 +73,7 @@
 		<LinearLayout android:orientation="vertical" android:id="@+id/subLayout"
 			android:visibility="gone" android:background="@drawable/popup2"
 			android:layout_width="fill_parent" android:layout_height="wrap_content"
+			android:layout_marginRight="6.0dip" android:layout_marginLeft="4.0dip"
 			android:layout_marginBottom="4.0dip">
 			<!--回复 -->
 			<TextView android:textSize="14.0sp" android:textColor="#ff666666"
@@ -91,17 +93,17 @@
         
 		<LinearLayout android:orientation="horizontal"
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
-				android:layout_marginRight="3.0dip">
-				<!--昵称 -->
-				<TextView android:textSize="15.0sp" android:textColor="#ff333333"
+				android:layout_marginRight="5.0dip" android:layout_marginLeft="4.0dip">
+				<!--时间 -->
+				<TextView android:textSize="10.0sp" android:textColor="#ff333333"
 					android:id="@+id/tvItemDate" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:text="" />
 				<!--新浪认证 -->
 				<RelativeLayout android:gravity="left"
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:layout_marginRight="3.0dip" android:layout_weight="1.0">
-					<!--时间 -->
-					<TextView android:textSize="12.0sp" android:textColor="#ff666666"
+					<!--来源 -->
+					<TextView android:textSize="10.0sp" android:textColor="#ff666666"
 						android:layout_gravity="left" android:id="@+id/tvItemFrom"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginLeft="3.0dip" android:text=""
@@ -111,7 +113,7 @@
 					    android:layout_gravity="right" 
 						android:visibility="visible" android:saveEnabled="false"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:layout_marginTop="3.0dip" android:src="@drawable/tmp"
+						 android:src="@drawable/tmp"
 						android:layout_alignTop="@id/tvItemDate"
 						android:layout_alignParentRight="true"  />
 				</RelativeLayout>

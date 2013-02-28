@@ -8,6 +8,7 @@ import com.example.logic.ui.util.commentViewHolder;
 import com.example.ui.Comment;
 import com.example.ui.Status;
 import com.example.ui.logic.imaCache.Anseylodar;
+import com.example.util.Utility;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -67,6 +68,7 @@ public class commentAdapter extends  BaseAdapter {
 		vHolder.tvCommentName=(TextView) statusView.findViewById(R.id.tvCommentName);
 		vHolder.tvCommentContent=(TextView)statusView.findViewById(R.id.tvCommentContent);
 		vHolder.ivCommentPorprait=(ImageView)statusView.findViewById(R.id.ivCommentPortrait);
+		vHolder.tvCommentTimeData = (TextView) statusView.findViewById(R.id.tvCommentTime);
 	//	vHolder.tvCommentTimeData=(TextView)statusView.findViewById(R.id.tvCommentDate);
 		//vHolder.subLayoutView=(LinearLayout) statusView.findViewById(R.id.subLayout);
 		//vHolder.tvitemSubcontent=(TextView) statusView.findViewById(R.id.tvItemSubContent);
@@ -84,6 +86,9 @@ public class commentAdapter extends  BaseAdapter {
 		vHolder.tvCommentName.setText(mcomment.getUser().getName());
 		//设定内容
 		vHolder.tvCommentContent.setText(mcomment.getText());
+		
+		vHolder.tvCommentTimeData.setText(Utility.showTime(mcomment.getCreatedAt()));
+		
 	//	vHolder.tvCommentFrom.setText(" From: " + mcomment.getSource().getName());
 		//设定表发微博的时间
 		//mstatus

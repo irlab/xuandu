@@ -36,11 +36,7 @@ public class AccessTokenKeeper {
 	 */
 	public static void clear(Context context){
 	    SharedPreferences pref = context.getSharedPreferences(PREFERENCES_NAME, Context.MODE_APPEND);
-	    System.out.println("sharepreference clear ..........................");
 	    pref.edit().clear().commit();
-//	    Editor editor = pref.edit();
-//	    editor.clear();
-//	    editor.commit();
 	    exist_flag = 0;
 	}
 
@@ -56,13 +52,13 @@ public class AccessTokenKeeper {
 		token.setExpiresTime(pref.getLong("expiresTime", 0));
 		return token;
 	}
-	public static void savaautoLogin( Context context,boolean isauto){
-		SharedPreferences spuserID=context.getSharedPreferences("isauto",Activity.MODE_PRIVATE );
+	public static void savaautoLogin( Context context,   boolean isauto){
+		SharedPreferences spuserID=context.getSharedPreferences("isauto",  Context.MODE_APPEND);
 		spuserID.edit().putBoolean("isauto", isauto).commit();
 	}
 	
 	public static boolean getauto(Context context){
-		SharedPreferences spuserisFirst=context.getSharedPreferences("isauto",Activity.MODE_PRIVATE );
+		SharedPreferences spuserisFirst=context.getSharedPreferences("isauto", Context.MODE_APPEND);
 		boolean isauto=spuserisFirst.getBoolean("isauto", false);
 		return isauto;
 	}

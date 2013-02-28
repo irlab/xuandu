@@ -1,5 +1,7 @@
 package com.example.util;
 
+import java.util.Date;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListAdapter;
@@ -24,4 +26,9 @@ public class Utility {
         params.height = totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
         listView.setLayoutParams(params);
     }
+    
+	public static String showTime(Date t) {
+		String time = t.getMonth() + "-" + t.getDate() + " " + t.getHours() + ":" +  t.getMinutes(); 
+		return time;
+	}
 }

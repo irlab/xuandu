@@ -6,6 +6,7 @@ import com.example.R;
 import com.example.logic.MainService;
 import com.example.util.AccessTokenKeeper;
 import com.example.util.Exit;
+import com.example.util.MyContext;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -66,7 +67,7 @@ public class MoreSetting extends Activity {
 				    }
 				    file.delete();
 				   }
-			//	AccessTokenKeeper.clear(MoreSetting.this);
+				AccessTokenKeeper.clear(MyContext.getContext());
 				MainService.exitAPP(MoreSetting.this);
 				break;
 			}
