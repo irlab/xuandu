@@ -90,6 +90,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	RelativeLayout tweet_profile;//
 	TextView tweet_updated;
 	TextView tweet_via;
+
 	//List<PostParameter> params;
 	//下面的5个按钮 刷新 评论 转发 收藏 更多
 	TextView tvReload,tvComment,tvForward,tvFav,tvMore;

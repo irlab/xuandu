@@ -17,6 +17,7 @@ import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.View.OnClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +25,7 @@ import android.widget.TextView;
 
 public class WeiboAdapter  extends  BaseAdapter{
 	 public List<Status> status;//微博信息
+	//public ViewHolder vHolder;
      Context mContext;//上下文
      Anseylodar ansylodar;
      
@@ -47,6 +49,14 @@ public class WeiboAdapter  extends  BaseAdapter{
 		if (status!=null) {
 			this.status.addAll(addmore);//吧新传得数据加到现在的list中
 			this.notifyDataSetChanged();//将数据追加到ListView中显示
+		}
+	}
+	
+	public void refreshData(List<Status> data) {
+		if(status != null) {
+			this.status.clear();
+			this.status.addAll(data);
+			this.notifyDataSetChanged();
 		}
 	}
 	@Override
@@ -76,6 +86,7 @@ public class WeiboAdapter  extends  BaseAdapter{
 		vHolder.contentPic=(ImageView)statusView.findViewById(R.id.contentPic);
 		vHolder.subContenPic=(ImageView)statusView.findViewById(R.id.subContentPic);
 		vHolder.tvitemFrom =(TextView)statusView.findViewById(R.id.tvItemFrom); 
+		vHolder.ivItemGood = (ImageView) statusView.findViewById(R.id.ivItemGood);
 		
 		Status mstatus=status.get(position);
 
@@ -91,6 +102,14 @@ public class WeiboAdapter  extends  BaseAdapter{
 		//设定表发微博的时间
 		//mstatus
 		vHolder.tvitemTimeData.setText(Utility.showTime(mstatus.getCreatedAt()));
+		vHolder.ivItemGood.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ImageView ivItemGood = (ImageView) v;
+				ivItemGood.setImageResource(R.drawable.gooood);
+			}
+		});
+		
 		//加载用户头像
 		
 		String usericon=mstatus.getUser().getProfileImageURL().toString();

@@ -21,6 +21,7 @@ import com.example.ui.Login;
 import com.example.ui.User;
 import com.example.ui.logic.main.TaskGetCloseFriends;
 import com.example.ui.logic.main.TaskGetComment;
+import com.example.ui.logic.main.TaskGetFreshWeibo;
 import com.example.ui.logic.main.TaskGetSimilarTastes;
 import com.example.ui.logic.main.TaskGetUserHomeTimeLine;
 import com.example.ui.logic.main.TaskGetUserHotWords;
@@ -107,6 +108,10 @@ public class MainService extends Service implements Runnable
 					IWeiboActivity tmp = (IWeiboActivity) MainService.getActivityByName("weiboContent");
 					tmp.refresh(1, msg.obj);
 					break;
+			case Task.TASK_GET_FRESHWEIBO:
+					IWeiboActivity new_weibo = (IWeiboActivity) MainService.getActivityByName("HomeActivity");
+					new_weibo.refresh(2, msg.obj);
+				break;
 			/*
 			case Task.TASK_SEARCH_WEIBO:
 					IWeiboActivity ia2 = (IWeiboActivity) MainService	
@@ -133,6 +138,11 @@ public class MainService extends Service implements Runnable
 			case Task.TASK_GET_USER_HOMETIMEINLINE:// 得到刷新主页面信息的任务		
 				TaskGetUserHomeTimeLine _taskGetUserHomeTimeLine = new TaskGetUserHomeTimeLine( HomeActivity.pageSize, 
 						(Long) task.getTaskParam().get("maxId"), mess);
+				break;
+			case Task.TASK_GET_FRESHWEIBO:
+				System.out.println("TASK_GET_REFRESHWEIBO start!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+				TaskGetFreshWeibo _t = new TaskGetFreshWeibo((Integer) task.getTaskParam().get("pageSize"), 
+						(Integer) task.getTaskParam().get("nowPage"), mess);
 				break;
 			case Task.TASK_GET_HOT_WORD:// 得到圈中热语任务
 				
