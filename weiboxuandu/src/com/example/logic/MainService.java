@@ -159,7 +159,7 @@ public class MainService extends Service implements Runnable
 				break;
 			case Task.TASK_GET_COMMENT:
 				System.out.println("TASK_GET_COMMENT start!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				TaskGetComment _taskComment = new TaskGetComment(Long.valueOf((String) task.getTaskParam().get("ID")), mess);
+				TaskGetComment _taskComment = new TaskGetComment(Long.valueOf((String) task.getTaskParam().get("ID")), Integer.valueOf((String) task.getTaskParam().get("nowPage")), mess);
 				break;
 		/*
 		 * 
