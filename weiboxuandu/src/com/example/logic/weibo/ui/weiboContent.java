@@ -90,10 +90,10 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	RelativeLayout tweet_profile;//
 	TextView tweet_updated;
 	TextView tweet_via;
-
-	//List<PostParameter> params;
-	//下面的5个按钮 刷新 评论 转发 收藏 更多
-	TextView tvReload,tvComment,tvForward,tvFav,tvMore;
+	TextView retweet_times, comment_times;
+	// List<PostParameter> params;
+	// 下面的5个按钮 刷新 评论 转发 收藏 更多
+	TextView tvReload, tvComment, tvForward, tvFav, tvMore;
 
 	
 	private  Handler mHandler=new Handler()
@@ -117,7 +117,10 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			//微博内容
 			tweet_message.setText(status.getText().toString());
 			tweet_via.setText("From:" + status.getSource().getName());
-			tweet_updated.setText(Utility.showTime(status.getCreatedAt()) + " ");
+			retweet_times.setText("转发:"+status.getRepostsCount());
+			comment_times.setText("评论:" + status.getCommentsCount());
+			tweet_updated
+					.setText(Utility.showTime(status.getCreatedAt()) + " ");
 			progress.setVisibility(View.GONE);
 			//这里把人头像的图片转换成了180*180尺寸的大图了
 			URL url=WeiboUtil.getString(status.getUser().getProfileImageURL());
@@ -206,13 +209,15 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 //		TextView comment_num,redirect_num;//条数
 		tweet_updated = (TextView) head.findViewById(R.id.tweet_updated);
 		tweet_via = (TextView) head.findViewById(R.id.tweet_via);
-//		tvtitle = (TextView) head.findViewById(R.id.tvinfo);
-//		tvtitle.setText(R.string.weiboinfo);
-//			tvReload=(TextView) view.findViewById(R.id.tvReload);
-//			tvComment=(TextView) this.findViewById(R.id.tvComment);
-//			tvForward=(TextView) this.findViewById(R.id.tvForward);
-//			tvFav=(TextView) this.findViewById(R.id.tvFav);
-//			tvMore=(TextView) this.findViewById(R.id.tvMore);
+		retweet_times = (TextView) head.findViewById(R.id.retweetTimes);
+		comment_times = (TextView) head.findViewById(R.id.commentTimes);
+		// tvtitle = (TextView) head.findViewById(R.id.tvinfo);
+		// tvtitle.setText(R.string.weiboinfo);
+		// tvReload=(TextView) view.findViewById(R.id.tvReload);
+		// tvComment=(TextView) this.findViewById(R.id.tvComment);
+		// tvForward=(TextView) this.findViewById(R.id.tvForward);
+		// tvFav=(TextView) this.findViewById(R.id.tvFav);
+		// tvMore=(TextView) this.findViewById(R.id.tvMore);
 		tweet_profile = (RelativeLayout) head.findViewById(R.id.tweet_profile);
       
 		tweetstatusview=(LinearLayout) head.findViewById(R.id.src_text_block);
