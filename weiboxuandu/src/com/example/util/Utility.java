@@ -1,5 +1,7 @@
 package com.example.util;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import android.view.View;
@@ -28,7 +30,30 @@ public class Utility {
     }
     
 	public static String showTime(Date t) {
-		String time = t.getMonth() + "-" + t.getDate() + " " + t.getHours() + ":" +  t.getMinutes(); 
+		String time = "";
+		
+		long nowTimeMillis = System.currentTimeMillis();
+		long oldTimeMillis = t.getTime();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(t);
+		
+		long timeOffsetOfSecond = (nowTimeMillis - oldTimeMillis)/1000;
+		
+		
+		if (timeOffsetOfSecond < 60) {
+			time = (timeOffsetOfSecond < 0 ? 1 : timeOffsetOfSecond) + "秒前";
+		}
+		else if (timeOffsetOfSecond < 3600){
+			time = timeOffsetOfSecond / 60 + "分钟前";
+		}
+		else if (timeOffsetOfSecond < 86400){ // 3600*24
+			time = "今天" + cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE); 
+		}
+		else {
+			SimpleDateFormat df=new SimpleDateFormat("yyyy-MM-dd HH:mm"); 
+			time = df.format(t);
+		}
 		return time;
 	}
 }

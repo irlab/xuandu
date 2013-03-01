@@ -109,11 +109,11 @@
 						android:layout_marginLeft="3.0dip" android:text=""
 						/>
 					<!--时间图片 -->
-					<ImageView android:id="@+id/ivItemTmp"
+					<ImageView android:id="@+id/ivItemGood"
 					    android:layout_gravity="right" 
 						android:visibility="visible" android:saveEnabled="false"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						 android:src="@drawable/tmp"
+						android:src="@drawable/good"
 						android:layout_alignTop="@id/tvItemDate"
 						android:layout_alignParentRight="true"  />
 				</RelativeLayout>

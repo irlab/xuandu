@@ -17,4 +17,5 @@ public  class ViewHolder {
 		 public static  ImageView subContenPic;//显示回复内容的图片subLayout显示时 此内容才显示
 		 public static  TextView tvitemFrom;
 		 public static  ImageView ivItemTmp;
+		 public static  ImageView ivItemGood;
 }

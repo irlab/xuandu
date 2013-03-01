@@ -14,6 +14,7 @@ public class Task {
 	public static final int TASK_GET_CloseFriends_WORD = 4; // 密友寻踪
 	public static final int TASK_SimilarTastes = 5; // 相似口味
 	public static final int TASK_GET_COMMENT = 6;
+	public static final int TASK_GET_FRESHWEIBO = 7;
 	
 	
 	@SuppressWarnings("rawtypes")
