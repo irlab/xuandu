@@ -58,7 +58,16 @@ public class WeiboDbAdapter extends DbAdapter {
     
 	public long createWeibo(Status status) {
 		Log.d(TAG, "createWeibo.");
+		
+//		Cursor it = mDb.query(TABLE_NAME, null, id + "=" + status.getId(), null, null, null, id + " DESC");
+//		
+//		if(it.moveToFirst() == it.moveToLast()) {
+//			System.out.println("da createWeibo");
+//			return 0;
+//		}
+		
 		ContentValues initialValues = new ContentValues();
+		
 		initialValues.put(id, status.getId());
 		initialValues.put(create_at, status.getCreatedAt().toString());
 		initialValues.put(user, status.getUser().toString());
@@ -122,12 +131,11 @@ public class WeiboDbAdapter extends DbAdapter {
 //				truncated, in_reply_to_status_id, in_reply_to_screen_name, in_reply_to_user_id, 
 //				thumbnail_pic, bmiddle_pic, original_pic, geo, retweeted_status, reposts_count, 
 //				comments_count}, null, null, null, null, "_create_at desc");
-		Cursor it = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+		//Cursor it = mDb.query(TABLE_NAME, null, null, null, null, null, null);
+		Cursor it = mDb.query(TABLE_NAME, null, null, null, null, null, id + " DESC");
 		List<Status> weiboList = new ArrayList<Status>();
 		//it.move
 		for(it.moveToFirst(); !it.isAfterLast(); it.moveToNext()) {
-			//getWeibo(it);
-			//System.out.println(it.getCount() + " " + it.getPosition());
 			String _status = it.getString(it.getColumnIndex(jsonWeibo));
 			weiboList.add(new Status(_status));
 		} 
@@ -137,23 +145,23 @@ public class WeiboDbAdapter extends DbAdapter {
 		return weiboList;
 	}
 	
-	public Status getWeibo(Cursor it) {
-//		Status weibo = new Status(it);
-//		return weibo;
-		String[] _t = it.getColumnNames();
-		for(String s: _t) {
-			System.out.print(s + " " + it.getExtras().getString(s) + " " + it.getColumnIndex(s) );
-			int index = it.getColumnIndexOrThrow(s);
-			System.out.println(index);
-		//	if() {
-			if(it.getString(index) != null)
-				System.out.println(it.getString(index));
-		//	}
-		}
-		//it.getExtras().get(key)
-		System.out.println("");
-		return null;
-	}
+//	public Status getWeibo(Cursor it) {
+////		Status weibo = new Status(it);
+////		return weibo;
+//		String[] _t = it.getColumnNames();
+//		for(String s: _t) {
+//			System.out.print(s + " " + it.getExtras().getString(s) + " " + it.getColumnIndex(s) );
+//			int index = it.getColumnIndexOrThrow(s);
+//			System.out.println(index);
+//		//	if() {
+//			if(it.getString(index) != null)
+//				System.out.println(it.getString(index));
+//		//	}
+//		}
+//		//it.getExtras().get(key)
+//		System.out.println("");
+//		return null;
+//	}
     public void close() {
     	mDbHelper.close();
     }

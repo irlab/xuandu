@@ -1,6 +1,7 @@
 package com.example.ui;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,10 +38,12 @@ import android.widget.TextView;
 public class HomeActivity extends Activity implements IWeiboActivity {
 
 	public static final int REFRESH_WEIBO = 1;
+	public static final int NEW_WEIBO = 2;
 	public int nowPage = 1; // 当前第几页
-	public static final int pageSize = 5;  // 每页条
+	public static final int pageSize = 20;  // 每页条
 	public int weiboNum = 0;
 	public long maxid = 0;
+	public long minid = Long.MAX_VALUE;
 	private ListView weibolist; // 微博信息显示
 	private View loginprogress; // 开始页进度条
 	private LinearLayout moreweibo; // 底部更多项
@@ -48,6 +51,7 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	private ProgressBar titleprogressBar; // 顶部进度条
 	private WeiboAdapter adapter; // 微博信息的适配器
 	private ImageView btrefaush; // 刷新微博的按钮
+	private static List<Status> _statusList;
 	
 	// 设置信息常量
 	public static final int SETTING = 1; //  设置
@@ -144,7 +148,12 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	@Override
 	public void init() {
 		try {
-			refresh(REFRESH_WEIBO, MainService.mWeiboDbAdapter.getAllWeibos());
+			List<Status> tstatuses = MainService.mWeiboDbAdapter.getAllWeibos();
+			for(Status t:tstatuses) {
+				maxid =  Math.max(maxid, Long.valueOf( t.getId() ) );
+				minid =  Math.min(minid, Long.valueOf( t.getId() ) );
+			}
+			refresh(REFRESH_WEIBO, tstatuses);
 		} catch (WeiboException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -185,7 +194,15 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	// 刷新主页信息
 	public void refresh() {
 		nowPage = 1;
-		init();
+		HashMap<String, Integer> _param = new HashMap<String, Integer>();
+		//_statusList.clear();
+		_param.put("nowPage", new Integer(nowPage));
+		_param.put("pageSize", new Integer(pageSize));
+		
+		
+		Task task = new Task(Task.TASK_GET_FRESHWEIBO, _param);
+		MainService.allTask.add(task);
+	//	init();
 	}
 	
 	@Override
@@ -210,39 +227,75 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 		// TODO Auto-generated method stub
 		int flag = ((Integer) param[0]).intValue();
 		switch(flag) {
-		case REFRESH_WEIBO:
+			case REFRESH_WEIBO:
 			//btrefaush.setVisibility(View.GONE);
-			titleprogressBar.setVisibility(View.GONE);
-			if (nowPage == 1) {
-				loginprogress.setVisibility(View.GONE);
-				System.out.println(param[1]);
-				List<Status> nowStatus = (List<Status>) param[1];
-				for(Status it: nowStatus) {
-					maxid = Long.valueOf( it.getId() );
-					System.out.println("maxId  = " + maxid);
+				titleprogressBar.setVisibility(View.GONE);
+				if (nowPage == 1) {
+					loginprogress.setVisibility(View.GONE);
+					System.out.println(param[1]);
+					List<Status> nowStatus = (List<Status>) param[1];
+					weiboNum = nowStatus.size();
+					adapter = new WeiboAdapter(this, nowStatus);
+					weibolist.setAdapter(adapter);
 				}
-				weiboNum = nowStatus.size();
-				adapter = new WeiboAdapter(this, nowStatus);
-				weibolist.setAdapter(adapter);
-			}
-			else {
-				progressBar.setVisibility(View.GONE);
-				List<Status> nowStatus = (List<Status>) param[1];
-				for(Status it: nowStatus) {
-					maxid = Long.valueOf( it.getId() );
+				else {
+					progressBar.setVisibility(View.GONE);
+					List<Status> nowStatus = (List<Status>) param[1];
+					weiboNum += nowStatus.size();
+					adapter.addmoreDate(nowStatus);
+				}
+				List<Status> _t = (List<Status>) param[1];
+				System.out.println("homeActivity refresh is running.......");
+				for(Status s: _t) {
+					System.out.println("create_weibo Db");
+					if ( Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
+						break;
+					}
+					MainService.mWeiboDbAdapter.createWeibo(s);
+				}
+				for(Status s: _t) {
+					System.out.println("create_weibo Db");
+					if ( Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
+						break;
+					}
+					maxid =  Math.max(maxid, Long.valueOf( s.getId() ) );
+					minid =  Math.min(minid, Long.valueOf( s.getId() ) );
+				}
+				System.out.println("homeActivity refresh MainService.mWeiboDbAdapter.getAllWeibos()");
+				break;
+			case NEW_WEIBO:
+				titleprogressBar.setVisibility(View.GONE);
+				List<Status> __t = (List<Status>) param[1];
+				
+				boolean getNewWeibo = false;
+				
+				
+				for(Status s: __t) {
+					if (Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
+						getNewWeibo = true;
+						break;
+					} else  {
+						MainService.mWeiboDbAdapter.createWeibo(s);
+					}
+				}
+				for(Status s: __t) {
+					maxid =  Math.max(maxid, Long.valueOf( s.getId() ) );
+					minid =  Math.min(minid, Long.valueOf( s.getId() ) );
+				}
+				
+				if (getNewWeibo) {
+					init();
+				} else {
+					HashMap<String, Integer> _param = new HashMap<String, Integer>();
+					nowPage++;
+					_param.put("nowPage", new Integer(nowPage));
+					_param.put("pageSize", new Integer(pageSize));
 					
-					System.out.println("maxId  = " + maxid);
+					Task task = new Task(Task.TASK_GET_FRESHWEIBO, _param);
+					MainService.allTask.add(task);
 				}
-				weiboNum += nowStatus.size();
-				adapter.addmoreDate(nowStatus);
-			}
-			List<Status> _t = (List<Status>) param[1];
-			System.out.println("homeActivity refresh is running.......");
-			for(Status s: _t) {
-				System.out.println("create_weibo Db");
-				MainService.mWeiboDbAdapter.createWeibo(s);
-			}
-			System.out.println("homeActivity refresh MainService.mWeiboDbAdapter.getAllWeibos()");
+				break;
+			
 //			try {
 //				MainService.mWeiboDbAdapter.getAllWeibos();
 //			} catch (WeiboException e) {
