@@ -304,7 +304,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		HashMap<String, String> param = new HashMap<String, String>();
 		
 		param.put("ID", status.getId());
-		
+		param.put("nowPage", "" + nowPage);
 		Task task = new Task(Task.TASK_GET_COMMENT, param);
 		
 	    MainService.allTask.add(task);

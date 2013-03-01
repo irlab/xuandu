@@ -24,14 +24,14 @@ public class TaskGetComment implements RequestListener {
 //        statusApi.friendsTimeline(0, 0, pageSize, nowPage, false, FEATURE.ALL, false, this);
 //        _mess = mess;
 //	}
-	public TaskGetComment(long Id, Message mess) {
+	public TaskGetComment(long Id, int nowPage, Message mess) {
 		CommentsAPI commentsApi=new CommentsAPI(Login.accessToken);
 //      StatusesAPI statusApi=new StatusesAPI(Login.accessToken);
 //      statusApi.friendsTimeline(0, 0, pageSize, nowPage, false, FEATURE.ALL, false, this);
         System.out.println("TaskGetComment..................         Id = " + Id);
 //		long nowpage = 1;
 	//	long pagesize = 50;
-        commentsApi.show(Id, 0, 0, 10, 1, AUTHOR_FILTER.ALL, this);
+        commentsApi.show(Id, 0, 0, 10, nowPage, AUTHOR_FILTER.ALL, this);
      //   commentsApi.show(id, 0, max_id, count, page, filter_by_author, listener)
         
         System.out.println("hello world");
