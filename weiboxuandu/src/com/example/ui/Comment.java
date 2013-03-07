@@ -48,8 +48,12 @@ public class Comment extends WeiboResponse  implements Serializable  {
 			if(json.has("mid")) {
 				mid=json.getString("mid");
 			}
-			idstr = json.getLong("idstr");
-			text = json.getString("text");
+			if(json.has("idstr")) {
+				idstr = json.getLong("idstr");
+			}
+			if(json.has("text")) {
+				text = json.getString("text");
+			}
 			
 			if(json.has("source")){
 				source = new Source(json.getString("source"));
@@ -59,9 +63,9 @@ public class Comment extends WeiboResponse  implements Serializable  {
 				user = new User(json.getJSONObject("user"));
 				System.out.println(json.getJSONObject("user").toString());
 			}
-			
-			status = new Status(json.getString("status"));
-			
+			if(!json.isNull("status")) {
+				status = new Status(json.getString("status"));
+			}
 		} catch (JSONException je) {
 			throw new WeiboException(je.getMessage() + ":" + json.toString(), je);
 		}

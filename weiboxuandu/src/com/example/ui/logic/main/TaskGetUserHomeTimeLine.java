@@ -28,6 +28,14 @@ public class TaskGetUserHomeTimeLine implements RequestListener {
         _mess = mess;
 	}
 	
+	
+	public TaskGetUserHomeTimeLine(Long since_id, Long max_id, Integer pageSize, Integer nowPage, Message mess) {
+        StatusesAPI statusApi=new StatusesAPI(Login.accessToken);
+    //    System.out.println("TaskGetUserHomeTimeLine ..................         maxId = " + maxId);
+        statusApi.friendsTimeline(since_id, max_id, pageSize, nowPage, false, FEATURE.ALL, false, this);
+        _mess = mess;
+	}
+	
 	@Override
 	public void onComplete(String response) {
 		// TODO Auto-generated method stub

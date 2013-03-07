@@ -60,6 +60,7 @@ public class MoreSetting extends Activity {
 			case R.id.more_page_row6 :
 				break;
 			case R.id.more_page_row7 :
+				System.out.println("moresetting......................");
 				File file = CacheManager.getCacheFileBaseDir();
 				   if (file != null && file.exists() && file.isDirectory()) {
 				    for (File item : file.listFiles()) {
@@ -67,6 +68,7 @@ public class MoreSetting extends Activity {
 				    }
 				    file.delete();
 				   }
+				MainService.mWeiboDbAdapter.delete();
 				AccessTokenKeeper.clear(MyContext.getContext());
 				MainService.exitAPP(MoreSetting.this);
 				break;

@@ -31,4 +31,16 @@ public class HotWordsAPI extends ServerAPI {
         
         request( SERVER_URL_PRIX, params, HTTPMETHOD_GET, listener);
 	}
+	public void friendsTimeline(Long since_id, Long max_id, int now_page, int page_size, int order_type, RequestListener listener){
+	    WeiboParameters params = new WeiboParameters();
+	    System.out.println("______________________hotWord_________friendsTimeline_______________________");
+	    params.add("token", super.getToken());
+        params.add("nowPage", now_page);
+        params.add("pageSize", page_size);
+        params.add("orderType", order_type);
+        params.add("maxId", max_id);
+        params.add("since_id", since_id);
+        
+        request( SERVER_URL_PRIX, params, HTTPMETHOD_GET, listener);
+	}
 }

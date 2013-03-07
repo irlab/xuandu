@@ -3,11 +3,15 @@ package com.example.ui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import org.json.JSONException;
 
 import com.example.R;
+import com.example.db.WeiboDbAdapter;
+import com.example.db.WeiboDbAdapterV;
 import com.example.logic.IWeiboActivity;
 import com.example.logic.MainService;
 import com.example.logic.Task;
@@ -40,6 +44,7 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	public static final int REFRESH_WEIBO = 1;
 	public static final int NEW_WEIBO = 2;
 	public int nowPage = 1; // 当前第几页
+	public boolean init_flag = false;
 	public static final int pageSize = 20;  // 每页条
 	public int weiboNum = 0;
 	public long maxid = 0;
@@ -60,7 +65,9 @@ public class HomeActivity extends Activity implements IWeiboActivity {
  	public static final int COMMONT = 4; // 意见
 	public static final int ABOUTWEIBO = 5; // 关于
 	public static final int EXIT = 6; // 退出
+	
 
+	public static HashSet<Long> dict = new HashSet<Long>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +77,14 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 		initView(); // 初始化布局
     	MainService.allActivity.add(this);
     	init();
+	}
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+		HashSet<Long> it = adapter.dictLike;
+		for(Long i: it) {
+			System.out.println("Long = " + i);
+		}
 	}
 	
 	// 初始化页面的一些基本布局
@@ -126,6 +141,9 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				//progressBar.setVisibility(View.VISIBLE);
+				btrefaush.setVisibility(View.VISIBLE);
+				titleprogressBar.setVisibility(View.VISIBLE);
 				refresh();
 			}
 		});
@@ -148,7 +166,8 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	@Override
 	public void init() {
 		try {
-			List<Status> tstatuses = MainService.mWeiboDbAdapter.getAllWeibos();
+			init_flag = true;
+			List<Status> tstatuses = MainService.mWeiboDbAdapter.getAllWeibos(WeiboDbAdapterV.TABLE_NAME);
 			for(Status t:tstatuses) {
 				maxid =  Math.max(maxid, Long.valueOf( t.getId() ) );
 				minid =  Math.min(minid, Long.valueOf( t.getId() ) );
@@ -177,10 +196,16 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	
 	@SuppressLint("UseValueOf")
 	public void more() {
-		HashMap<String, Long> param = new HashMap<String, Long>();
-	//	param.put("nowPage", new Long(nowPage));
-		param.put("pageSize", new Long(pageSize));
-		param.put("maxId", new Long(maxid));
+		HashMap<String, String> param = new HashMap<String, String>();
+		param.put("nowPage",  Integer.toString(1));
+		param.put("pageSize", Integer.toString(pageSize));
+		
+		if (minid == Long.MAX_VALUE) {
+			param.put("maxId",  Long.toString(0L));
+		} else {
+			param.put("maxId", Long.toString(minid-1));
+		}
+		param.put("sinceId", Long.toString(0L));
 		
 		Task task = new Task(Task.TASK_GET_USER_HOMETIMEINLINE, param);
 		
@@ -194,12 +219,12 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 	// 刷新主页信息
 	public void refresh() {
 		nowPage = 1;
-		HashMap<String, Integer> _param = new HashMap<String, Integer>();
-		//_statusList.clear();
-		_param.put("nowPage", new Integer(nowPage));
-		_param.put("pageSize", new Integer(pageSize));
+		HashMap<String, String> _param = new HashMap<String, String>();
 		
-		
+		_param.put("nowPage",  Integer.toString(nowPage));
+		_param.put("pageSize", Integer.toString(pageSize));
+		_param.put("maxId",  Long.toString(0L));
+		_param.put("sinceId", Long.toString(maxid));
 		Task task = new Task(Task.TASK_GET_FRESHWEIBO, _param);
 		MainService.allTask.add(task);
 	//	init();
@@ -230,13 +255,20 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 			case REFRESH_WEIBO:
 			//btrefaush.setVisibility(View.GONE);
 				titleprogressBar.setVisibility(View.GONE);
-				if (nowPage == 1) {
+				if (init_flag) {
 					loginprogress.setVisibility(View.GONE);
 					System.out.println(param[1]);
 					List<Status> nowStatus = (List<Status>) param[1];
 					weiboNum = nowStatus.size();
-					adapter = new WeiboAdapter(this, nowStatus);
-					weibolist.setAdapter(adapter);
+					if(adapter == null) {
+						adapter = new WeiboAdapter(this, nowStatus);
+						weibolist.setAdapter(adapter);
+					} else {
+						adapter.status.clear();
+						adapter.addmoreDate(nowStatus);
+					}
+					adapter.notifyDataSetChanged();
+					init_flag = false;
 				}
 				else {
 					progressBar.setVisibility(View.GONE);
@@ -245,66 +277,46 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 					adapter.addmoreDate(nowStatus);
 				}
 				List<Status> _t = (List<Status>) param[1];
-				System.out.println("homeActivity refresh is running.......");
+				
 				for(Status s: _t) {
-					System.out.println("create_weibo Db");
-					if ( Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
-						break;
-					}
-					MainService.mWeiboDbAdapter.createWeibo(s);
-				}
-				for(Status s: _t) {
-					System.out.println("create_weibo Db");
-					if ( Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
-						break;
-					}
 					maxid =  Math.max(maxid, Long.valueOf( s.getId() ) );
 					minid =  Math.min(minid, Long.valueOf( s.getId() ) );
+					if ( dict.contains( Long.valueOf(s.getId())) ) {
+						continue;
+					}
+					dict.add(Long.valueOf(s.getId()));
+					MainService.mWeiboDbAdapter.createWeibo(s, WeiboDbAdapterV.TABLE_NAME);
 				}
-				System.out.println("homeActivity refresh MainService.mWeiboDbAdapter.getAllWeibos()");
 				break;
 			case NEW_WEIBO:
-				titleprogressBar.setVisibility(View.GONE);
 				List<Status> __t = (List<Status>) param[1];
 				
 				boolean getNewWeibo = false;
 				
-				
 				for(Status s: __t) {
-					if (Long.valueOf(s.getId()) >= minid && Long.valueOf(s.getId()) <= maxid) {
+					if(dict.contains(Long.valueOf( s.getId() ))) {
 						getNewWeibo = true;
-						break;
 					} else  {
-						MainService.mWeiboDbAdapter.createWeibo(s);
+						MainService.mWeiboDbAdapter.createWeibo(s, WeiboDbAdapterV.TABLE_NAME);
+						dict.add(Long.valueOf(s.getId()));
 					}
 				}
-				for(Status s: __t) {
-					maxid =  Math.max(maxid, Long.valueOf( s.getId() ) );
-					minid =  Math.min(minid, Long.valueOf( s.getId() ) );
-				}
-				
-				if (getNewWeibo) {
+				if (getNewWeibo || __t.isEmpty()) {
 					init();
 				} else {
-					HashMap<String, Integer> _param = new HashMap<String, Integer>();
+					
 					nowPage++;
-					_param.put("nowPage", new Integer(nowPage));
-					_param.put("pageSize", new Integer(pageSize));
+					HashMap<String, String> _param = new HashMap<String, String>();
+					_param.put("nowPage",  Integer.toString(nowPage));
+					_param.put("pageSize", Integer.toString(pageSize));
+					_param.put("maxId",  Long.toString(0L));
+					_param.put("sinceId", Long.toString(maxid));
 					
 					Task task = new Task(Task.TASK_GET_FRESHWEIBO, _param);
+					
 					MainService.allTask.add(task);
 				}
 				break;
-			
-//			try {
-//				MainService.mWeiboDbAdapter.getAllWeibos();
-//			} catch (WeiboException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
 		}
 	}
 	@Override
@@ -327,7 +339,7 @@ public class HomeActivity extends Activity implements IWeiboActivity {
 			break;
 		case EXIT:
 			// 退出应用程序
-			MainService.exitAPP(HomeActivity.this);
+		//	MainService.exitAPP(HomeActivity.this);
 			break;
 		}
 		return super.onOptionsItemSelected(item);

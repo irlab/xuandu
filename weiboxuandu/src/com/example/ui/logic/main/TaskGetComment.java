@@ -31,7 +31,7 @@ public class TaskGetComment implements RequestListener {
         System.out.println("TaskGetComment..................         Id = " + Id);
 //		long nowpage = 1;
 	//	long pagesize = 50;
-        commentsApi.show(Id, 0, 0, 10, nowPage, AUTHOR_FILTER.ALL, this);
+        commentsApi.show(Id, 0, 0, 5, nowPage, AUTHOR_FILTER.ALL, this);
      //   commentsApi.show(id, 0, max_id, count, page, filter_by_author, listener)
         
         System.out.println("hello world");

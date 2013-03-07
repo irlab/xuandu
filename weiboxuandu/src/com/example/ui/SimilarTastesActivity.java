@@ -12,6 +12,7 @@ import com.example.logic.MainService;
 import com.example.logic.Task;
 import com.example.logic.weibo.ui.WeiboInfo;
 import com.example.logic.weibo.ui.WriteWeibo;
+import com.example.logic.weibo.ui.weiboContent;
 import com.example.ui.adapter.WeiboAdapter;
 
 import android.app.Activity;
@@ -128,7 +129,7 @@ public class SimilarTastesActivity extends Activity implements IWeiboActivity {
 					int position, long id) {
 			
 				Status nowstu = (Status) parent.getAdapter().getItem(position);
-				Intent intent = new Intent(SimilarTastesActivity.this, WeiboInfo.class);
+				Intent intent = new Intent(SimilarTastesActivity.this, weiboContent.class);
 				// 发送到weiboInfo
 				intent.putExtra("status", nowstu.getJson());
 				SimilarTastesActivity.this.startActivity(intent);	

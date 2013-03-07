@@ -15,8 +15,10 @@ import android.os.Message;
 import android.util.Log;
 import com.example.R;
 import com.example.db.WeiboDbAdapter;
+import com.example.db.WeiboDbAdapterV;
 import com.example.ui.HomeActivity;
 import com.example.ui.HotWordsActivity;
+import com.example.ui.HotWordsActivity2;
 import com.example.ui.Login;
 import com.example.ui.User;
 import com.example.ui.logic.main.TaskGetCloseFriends;
@@ -34,9 +36,9 @@ public class MainService extends Service implements Runnable
 {
 	public static Weibo weibo;
 	public static User nowuser;
-	public static long min_time_id = -1;
-	public static long max_time_id = -1;
-	public static WeiboDbAdapter mWeiboDbAdapter = null;
+//	public static long min_time_id = -1;
+//	public static long max_time_id = -1;
+	public static WeiboDbAdapterV mWeiboDbAdapter = null;
 	
 	// 将当前的activity加到Service中方便管理和调用
 	public static ArrayList<Activity> allActivity = new ArrayList<Activity>();
@@ -59,13 +61,16 @@ public class MainService extends Service implements Runnable
 	
 	// 将当前任务加到任务集合中
 	public static void newTask(Task task) {
-		allTask.add(task);	
+		allTask.add(task);
+	//	mWeiboDbAdapter
 	}
 	private void startDb() {
+		System.out.println("startDb 12");
 		if(mWeiboDbAdapter == null){
-		    mWeiboDbAdapter = new WeiboDbAdapter(this);
+			System.out.println("startDb 12");
+		    mWeiboDbAdapter = new WeiboDbAdapterV(this);
 			mWeiboDbAdapter.open();		
-		}
+		} 
 	}
 		
 	
@@ -94,6 +99,16 @@ public class MainService extends Service implements Runnable
 						.getActivityByName("HotWordsActivity");
 					hotWords.refresh(HotWordsActivity.REFRESH_WEIBO, msg.obj);
 					break;
+			case Task.TASK_GET_HOT_WORD1:
+				IWeiboActivity hotWords1 = (IWeiboActivity) MainService
+					.getActivityByName("HotWordsActivity2");
+				hotWords1.refresh(HotWordsActivity2.NEW_WEIBO, msg.obj);
+				break;
+			case Task.TASK_GET_HOT_WORD2:
+				IWeiboActivity _hotWords = (IWeiboActivity) MainService
+					.getActivityByName("HotWordsActivity2");
+				_hotWords.refresh(HotWordsActivity2.REFRESH_WEIBO, msg.obj);
+				break;
 			case Task.TASK_GET_CloseFriends_WORD:
 					IWeiboActivity closeFriends = (IWeiboActivity) MainService
 						.getActivityByName("CloseFriendsActivity");
@@ -110,7 +125,7 @@ public class MainService extends Service implements Runnable
 					break;
 			case Task.TASK_GET_FRESHWEIBO:
 					IWeiboActivity new_weibo = (IWeiboActivity) MainService.getActivityByName("HomeActivity");
-					new_weibo.refresh(2, msg.obj);
+					new_weibo.refresh(HomeActivity.NEW_WEIBO, msg.obj);
 				break;
 			/*
 			case Task.TASK_SEARCH_WEIBO:
@@ -136,19 +151,39 @@ public class MainService extends Service implements Runnable
 				TaskUserLogin _obj = new TaskUserLogin(mess);
 			    break;
 			case Task.TASK_GET_USER_HOMETIMEINLINE:// 得到刷新主页面信息的任务		
-				TaskGetUserHomeTimeLine _taskGetUserHomeTimeLine = new TaskGetUserHomeTimeLine( HomeActivity.pageSize, 
-						(Long) task.getTaskParam().get("maxId"), mess);
+				TaskGetUserHomeTimeLine _taskGetUserHomeTimeLine = new TaskGetUserHomeTimeLine(Long.valueOf( (String) task.getTaskParam().get("sinceId") ),
+						Long.valueOf( (String) task.getTaskParam().get("maxId") ),
+						Integer.valueOf( (String) task.getTaskParam().get("pageSize")), 
+					Integer.valueOf((String)task.getTaskParam().get("nowPage")), mess); 
 				break;
 			case Task.TASK_GET_FRESHWEIBO:
-				System.out.println("TASK_GET_REFRESHWEIBO start!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-				TaskGetFreshWeibo _t = new TaskGetFreshWeibo((Integer) task.getTaskParam().get("pageSize"), 
-						(Integer) task.getTaskParam().get("nowPage"), mess);
+				TaskGetUserHomeTimeLine __taskGetUserHomeTimeLine = new TaskGetUserHomeTimeLine(Long.valueOf( (String) task.getTaskParam().get("sinceId") ),
+						Long.valueOf( (String) task.getTaskParam().get("maxId") ),
+						Integer.valueOf( (String) task.getTaskParam().get("pageSize")), 
+					Integer.valueOf((String)task.getTaskParam().get("nowPage")), mess); 
 				break;
 			case Task.TASK_GET_HOT_WORD:// 得到圈中热语任务
 				
 				TaskGetUserHotWords _taskGetUserHotWords = new TaskGetUserHotWords((Integer) task.getTaskParam().get("pageSize"), 
 						(Integer) task.getTaskParam().get("nowPage"), mess);
 				break;
+			case Task.TASK_GET_HOT_WORD2:// 得到圈中热语任务
+				//task.getTaskParam().get
+				
+				TaskGetUserHotWords _taskGetUserHotWords2 = new TaskGetUserHotWords(Long.valueOf( (String) task.getTaskParam().get("sinceId") ),
+						Long.valueOf( (String) task.getTaskParam().get("maxId") ),
+							Integer.valueOf( (String) task.getTaskParam().get("pageSize")), 
+						Integer.valueOf((String)task.getTaskParam().get("nowPage")), mess); 
+				break;
+			
+			case Task.TASK_GET_HOT_WORD1:// 得到圈中热语任务
+				//task.getTaskParam().get
+				TaskGetUserHotWords _taskGetUserHotWords1 = new TaskGetUserHotWords(Long.valueOf( (String) task.getTaskParam().get("sinceId") ),
+						Long.valueOf( (String) task.getTaskParam().get("maxId") ),
+							Integer.valueOf( (String) task.getTaskParam().get("pageSize")), 
+						Integer.valueOf((String)task.getTaskParam().get("nowPage")), mess); 
+				break;
+				
 			case Task.TASK_GET_CloseFriends_WORD:// 得到密友寻踪任务
 				TaskGetCloseFriends _task3 = new TaskGetCloseFriends((Integer) task.getTaskParam().get("pageSize"), 
 						(Integer) task.getTaskParam().get("nowPage"), mess);

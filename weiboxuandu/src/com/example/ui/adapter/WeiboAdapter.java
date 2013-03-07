@@ -1,15 +1,21 @@
 package com.example.ui.adapter;
 
+import java.util.HashSet;
 import java.util.List;
 
 import com.example.R;
 import com.example.logic.ui.util.ViewHolder;
+import com.example.logic.weibo.ui.picActivity;
+import com.example.logic.weibo.ui.weiboContent;
+import com.example.ui.HomeActivity;
 import com.example.ui.Status;
 import com.example.ui.logic.imaCache.Anseylodar;
 import com.example.util.Utility;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -24,7 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class WeiboAdapter  extends  BaseAdapter{
-	 public List<Status> status;//微博信息
+	public List<Status> status;//微博信息
+	
+	public HashSet<Long> dictLike = new HashSet<Long>();
+	
 	//public ViewHolder vHolder;
      Context mContext;//上下文
      Anseylodar ansylodar;
@@ -66,7 +75,7 @@ public class WeiboAdapter  extends  BaseAdapter{
 
 	@SuppressWarnings({ "static-access", "deprecation" })
 	@Override
-	public View getView(int position, View conterView, ViewGroup arg2) {
+	public View getView(final int position, View conterView, ViewGroup arg2) {
 		
 		View statusView=null;
 		if ((conterView!=null)&&(conterView.findViewById(R.id.contentPic)!=null)) {
@@ -99,6 +108,7 @@ public class WeiboAdapter  extends  BaseAdapter{
 		//设定内容
 		vHolder.tvContent.setText(mstatus.getText());
 		vHolder.tvitemFrom.setText(" From: " + mstatus.getSource().getName());
+		vHolder.ivItemGood.setImageResource(R.drawable.good30); 
 		//设定表发微博的时间
 		//mstatus
 		vHolder.tvitemTimeData.setText(Utility.showTime(mstatus.getCreatedAt()));
@@ -106,7 +116,8 @@ public class WeiboAdapter  extends  BaseAdapter{
 			@Override
 			public void onClick(View v) {
 				ImageView ivItemGood = (ImageView) v;
-				ivItemGood.setImageResource(R.drawable.gooood);
+				ivItemGood.setImageResource(R.drawable.gooood30);
+				dictLike.add(Long.valueOf(status.get(position).getId()));
 			}
 		});
 		
@@ -115,9 +126,10 @@ public class WeiboAdapter  extends  BaseAdapter{
 		String usericon=mstatus.getUser().getProfileImageURL().toString();
 		ansylodar.showimgAnsy(vHolder.ivitemPorprait, usericon);
 		//判断是否又转发
+		vHolder.contentPic.setVisibility(View.GONE);
 		if (mstatus.getRetweetedStatus()!=null) {
-			vHolder.contentPic.setVisibility(View.GONE);
 			vHolder.subLayoutView.setVisibility(View.VISIBLE);//设置有转发布局可见
+			vHolder.subContenPic.setVisibility(View.GONE);
 		    Status comentsStatus=status.get(position).getRetweetedStatus();//获取又转发内容
 			//vHolder.tvitemSubcontent.setText("@" + comentsStatus.getUser().getScreenName() + ":" + comentsStatus.getText());
 			String text = "@" + comentsStatus.getUser().getScreenName() + ":";
@@ -141,6 +153,55 @@ public class WeiboAdapter  extends  BaseAdapter{
 			vHolder.contentPic.setVisibility(View.GONE);
 			vHolder.subLayoutView.setVisibility(View.GONE);//设置又转发布局不可见
 		}
+		vHolder.subContenPic.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				
+				//ImageView t = (ImageView) 
+				String pic_path = status.get(position).getRetweetedStatus().getOriginalPic();
+				if (pic_path == null) {
+					pic_path = status.get(position).getRetweetedStatus().getBmiddlePic();
+				} 
+				if (pic_path == null) {
+					pic_path = status.get(position).getRetweetedStatus().getThumbnailPic();
+				}
+				if (pic_path != null) { 
+				
+				System.out.println("a = " + status.get(position).getRetweetedStatus().getThumbnailPic() + " b = " + status.get(position).getRetweetedStatus().getBmiddlePic() + " c = " + status.get(position).getRetweetedStatus().getOriginalPic());
+				Intent intent = new Intent( mContext, picActivity.class);
+				
+				intent.putExtra("pic_path", pic_path);
+			//	startActivity(intent);
+				mContext.startActivity(intent);	
+				}
+			}
+		});
+		
+		
+		vHolder.contentPic.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//ImageView t = (ImageView) v;
+				String pic_path = status.get(position).getOriginalPic();
+				//System.out.println("a = " + pic_path);
+				if (pic_path == null) {
+					pic_path = status.get(position).getBmiddlePic();
+				} 
+				//System.out.println("b = " + pic_path);
+				if (pic_path == null) {
+					pic_path = status.get(position).getThumbnailPic();
+				}
+				//System.out.println("c = "+ pic_path);
+				System.out.println("a = " + status.get(position).getThumbnailPic() + " b = " + status.get(position).getBmiddlePic() + " c = " + status.get(position).getOriginalPic());
+				if (pic_path != null) {  
+				Intent intent = new Intent( mContext, picActivity.class);
+				
+				intent.putExtra("pic_path", pic_path);
+			//	startActivity(intent);
+				mContext.startActivity(intent);	
+				}
+			}
+		});
 		
 		return statusView;
 	}

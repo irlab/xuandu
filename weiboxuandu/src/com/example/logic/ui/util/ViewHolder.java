@@ -1,5 +1,7 @@
 package com.example.logic.ui.util;
 
+import com.example.util.ImageViewEx;
+
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,4 +20,6 @@ public  class ViewHolder {
 		 public static  TextView tvitemFrom;
 		 public static  ImageView ivItemTmp;
 		 public static  ImageView ivItemGood;
+		 
+		 public static  ImageViewEx contentPicEx;
 }

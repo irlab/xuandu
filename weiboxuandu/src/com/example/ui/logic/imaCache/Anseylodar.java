@@ -40,7 +40,12 @@ public class Anseylodar {
 		public void loadedImage(String path, Bitmap bitmap) {
 			Log.i("tag", path+"---"+imageView.getTag().toString());
 			if (path.equals(imageView.getTag().toString())) {
+				
 				imageView.setImageBitmap(bitmap);
+				if (imageView.getClass().getName()
+						.equals("com.example.logic.weibo.ui.MyImageView"))
+					imageView.setScaleType(ImageView.ScaleType.MATRIX);
+
 			}			
 		}
 	};

@@ -47,6 +47,8 @@ public class Status extends WeiboResponse  implements Serializable  {
 //	private int mlevel;
 	//private Visible visible;
 	private String __json;
+	private ArrayList<String> friends;
+	private List<Comment> friendsMessage;
 	
 	
 //	public static final String id = "_id";
@@ -95,6 +97,7 @@ public class Status extends WeiboResponse  implements Serializable  {
 			inReplyToScreenName=json.getString("in_reply_to_screen_name");
 			
 			favorited = getBoolean("favorited", json);
+			
 			truncated = getBoolean("truncated", json);
 			if(!json.isNull("thumbnail_pic")) {
 				thumbnailPic = json.getString("thumbnail_pic");
@@ -117,7 +120,22 @@ public class Status extends WeiboResponse  implements Serializable  {
 			if(!json.isNull("retweeted_status")){
 				retweetedStatus= new Status(json.getJSONObject("retweeted_status"));
 			}
-		//	mlevel = json.getInt("mlevel");
+			
+			JSONArray t = null;
+			if(!json.isNull("RetweetList")) {
+				friendsMessage = new ArrayList<Comment>();
+				friends = new ArrayList<String>();
+				t = json.getJSONArray("RetweetList");
+				for(int i = 0; i < t.length(); i++) {
+					Comment _t = new Comment(t.getJSONObject(i));
+					System.out.println("........................................hello world");
+					friendsMessage.add(_t);
+					if(!friends.contains(_t.getUser().getScreenName())) {
+						friends.add(_t.getUser().getScreenName());
+					}
+				}
+			}
+			
 			geo= json.getString("geo");
 			if(geo!=null &&!"".equals(geo) &&!"null".equals(geo)){
 				getGeoInfo(geo);
@@ -372,7 +390,6 @@ public class Status extends WeiboResponse  implements Serializable  {
 			if(!jsonStatus.isNull("reposts")){
 				statuses = jsonStatus.getJSONArray("reposts");
 			}
-			
 			System.out.println("______________________");
 			System.out.println(statuses.toString());
 			//Log.i("statuses", statuses.toString());
@@ -462,6 +479,12 @@ public class Status extends WeiboResponse  implements Serializable  {
 ////				+ annotations + ", mlevel=" + mlevel
 ////				+ ", visible=" + visible 
 //				+ "]";
+	}
+	public List<Comment> getComments() {
+		return friendsMessage;
+	}
+	public List<String> getfriends() {
+		return  friends;
 	}
 
 }

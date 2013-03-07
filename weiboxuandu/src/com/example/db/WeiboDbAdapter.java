@@ -19,7 +19,8 @@ import android.util.Log;
 public class WeiboDbAdapter extends DbAdapter {
 
 	private static final String TAG = "WeiboDbAdapter";
-	public static final String TABLE_NAME = "weibo";
+	public static String TABLE_NAME = "weibo";
+//	public static String TABLE_NAME= "weibo"
 
 	public static final String id = "_id";
 	public static final String text = "_text";
@@ -71,7 +72,7 @@ public class WeiboDbAdapter extends DbAdapter {
 		initialValues.put(id, status.getId());
 		initialValues.put(create_at, status.getCreatedAt().toString());
 		initialValues.put(user, status.getUser().toString());
-		System.out.println("createWeibo...   " + status.getUser().toString());
+		//System.out.println("createWeibo...   " + status.getUser().toString());
 		initialValues.put(text, status.getText());
 		initialValues.put(mid, status.getMid());
 		initialValues.put(idstr, status.getIdstr());

@@ -95,7 +95,7 @@
 				android:layout_width="fill_parent" android:layout_height="wrap_content"
 				android:layout_marginRight="5.0dip" android:layout_marginLeft="4.0dip">
 				<!--时间 -->
-				<TextView android:textSize="10.0sp" android:textColor="#ff333333"
+				<TextView android:textSize="15.0sp" android:textColor="#ff333333"
 					android:id="@+id/tvItemDate" android:layout_width="wrap_content"
 					android:layout_height="wrap_content" android:text="" />
 				<!--新浪认证 -->
@@ -103,7 +103,7 @@
 					android:layout_width="fill_parent" android:layout_height="wrap_content"
 					android:layout_marginRight="3.0dip" android:layout_weight="1.0">
 					<!--来源 -->
-					<TextView android:textSize="10.0sp" android:textColor="#ff666666"
+					<TextView android:textSize="15.0sp" android:textColor="#ff666666"
 						android:layout_gravity="left" android:id="@+id/tvItemFrom"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_marginLeft="3.0dip" android:text=""
@@ -113,7 +113,7 @@
 					    android:layout_gravity="right" 
 						android:visibility="visible" android:saveEnabled="false"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
-						android:src="@drawable/good"
+						android:src="@drawable/good30"
 						android:layout_alignTop="@id/tvItemDate"
 						android:layout_alignParentRight="true"  />
 				</RelativeLayout>

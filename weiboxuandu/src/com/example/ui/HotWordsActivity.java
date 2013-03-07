@@ -11,6 +11,8 @@ import com.example.logic.MainService;
 import com.example.logic.Task;
 import com.example.logic.weibo.ui.WeiboInfo;
 import com.example.logic.weibo.ui.WriteWeibo;
+import com.example.logic.weibo.ui.weiboContent;
+import com.example.logic.weibo.ui.weiboContent2;
 import com.example.ui.adapter.WeiboAdapter;
 
 import android.app.Activity;
@@ -125,7 +127,7 @@ public class HotWordsActivity extends Activity implements IWeiboActivity {
 					int position, long id) {
 			
 				Status nowstu = (Status) parent.getAdapter().getItem(position);
-				Intent intent = new Intent(HotWordsActivity.this, WeiboInfo.class);
+				Intent intent = new Intent(HotWordsActivity.this, weiboContent2.class);
 				// 发送到weiboInfo
 				intent.putExtra("status", nowstu.getJson());
 				HotWordsActivity.this.startActivity(intent);	
@@ -182,6 +184,9 @@ public class HotWordsActivity extends Activity implements IWeiboActivity {
 				loginprogress.setVisibility(View.GONE);
 				System.out.println(param[1]);
 				List<Status> nowStatus = (List<Status>) param[1];
+				for(Status s: nowStatus) {
+					System.out.println(s.toString());
+				}
 				adapter = new WeiboAdapter(this, nowStatus);
 				weibolist.setAdapter(adapter);
 			}

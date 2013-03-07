@@ -51,6 +51,7 @@ import android.widget.TextView;
 public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 
 	public static final int REFRESH_WEIBO = 1;
+	public static final int START_WEIBO = 0;
 	public int nowPage = 1; // 当前第几页
 	public int pageSize = 10;  // 每页条数
 	public static ListView weibolist; // 微博信息显示	
@@ -69,6 +70,8 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
  	public static final int COMMONT = 4; // 意见
 	public static final int ABOUTWEIBO = 5; // 关于
 	public static final int EXIT = 6; // 退出
+	
+	private int comment_show_num,redirect_show_num;
 	
 	
 	
@@ -91,6 +94,9 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	TextView tweet_updated;
 	TextView tweet_via;
 	TextView retweet_times, comment_times;
+	TextView retweet_friends;
+	
+	
 	// List<PostParameter> params;
 	// 下面的5个按钮 刷新 评论 转发 收藏 更多
 	TextView tvReload, tvComment, tvForward, tvFav, tvMore;
@@ -121,7 +127,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			comment_times.setText("评论:" + status.getCommentsCount());
 			tweet_updated
 					.setText(Utility.showTime(status.getCreatedAt()) + " ");
-			progress.setVisibility(View.GONE);
+		//	progress.setVisibility(View.GONE);
 			//这里把人头像的图片转换成了180*180尺寸的大图了
 			URL url=WeiboUtil.getString(status.getUser().getProfileImageURL());
 			//异步加载头像图片
@@ -129,6 +135,33 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			if (status.getOriginalPic()!=null) {
 				//一步加载内容图片
 				anseylodar.showimgAnsy(tweet_upload_pic, status.getThumbnailPic());
+				
+				tweet_upload_pic.setOnClickListener( new OnClickListener( ) {
+					
+					@Override
+					public void onClick(View v) {
+						//ImageView t = (ImageView) v;
+						String pic_path = status.getOriginalPic();
+						//System.out.println("a = " + pic_path);
+						if (pic_path == null) {
+							pic_path = status.getBmiddlePic();
+						} 
+						//System.out.println("b = " + pic_path);
+						if (pic_path == null) {
+							pic_path = status.getThumbnailPic();
+						}
+						//System.out.println("c = "+ pic_path);
+						//System.out.println("a = " + status.getRetweetedStatus()getThumbnailPic() + " b = " + status.get(position).getBmiddlePic() + " c = " + status.get(position).getOriginalPic());
+						if (pic_path != null) {  
+							
+							Intent intent = new Intent( weiboContent.this, picActivity.class);
+						
+							intent.putExtra("pic_path", pic_path);
+					//	startActivity(intent);
+							weiboContent.this.startActivity(intent);	
+						}
+					}
+				});
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -145,6 +178,33 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 				tweet_oriTxt.setText(ss);
              //异步加载图片
 				anseylodar.showimgAnsy(tweet_upload_pic2, tweetstatus.getThumbnailPic());
+				
+				tweet_upload_pic2.setOnClickListener( new OnClickListener( ) {
+					
+					@Override
+					public void onClick(View v) {
+						//ImageView t = (ImageView) v;
+						String pic_path = status.getRetweetedStatus().getOriginalPic();
+						//System.out.println("a = " + pic_path);
+						if (pic_path == null) {
+							pic_path = status.getRetweetedStatus().getBmiddlePic();
+						} 
+						//System.out.println("b = " + pic_path);
+						if (pic_path == null) {
+							pic_path = status.getRetweetedStatus().getThumbnailPic();
+						}
+						//System.out.println("c = "+ pic_path);
+						//System.out.println("a = " + status.getRetweetedStatus()getThumbnailPic() + " b = " + status.get(position).getBmiddlePic() + " c = " + status.get(position).getOriginalPic());
+						if (pic_path != null) {  
+							
+							Intent intent = new Intent( weiboContent.this, picActivity.class);
+						
+							intent.putExtra("pic_path", pic_path);
+					//	startActivity(intent);
+							weiboContent.this.startActivity(intent);	
+						}
+					}
+				});
 			} catch (Exception e) {
 				e.printStackTrace();
 		}
@@ -163,13 +223,7 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.weiboxx);
-	}
-	
-	@Override
-	protected void onStart() {
-		super.onStart();
 		
-		// 获取HomeActivity发来的数据
 		Intent data = getIntent();
 		System.out.println( data.getExtras().get("status") );
 		try {
@@ -189,6 +243,33 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
         anseylodar=new Anseylodar();
         Thread statusT=new Thread(this);
         statusT.start();
+        
+	}
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		// 获取HomeActivity发来的数据
+//		Intent data = getIntent();
+//		System.out.println( data.getExtras().get("status") );
+//		try {
+//			status = new Status( new JSONObject( (String) data.getExtras().get("status") ) );
+//		} catch (WeiboException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	
+//		initView(); // 初始化布局
+//    	MainService.allActivity.add(this);
+//    	init();
+//    	
+//        anseylodar=new Anseylodar();
+//        Thread statusT=new Thread(this);
+//        statusT.start();
 	}
 	// 初始化页面的一些基本布局
 	private void initView() {
@@ -207,10 +288,14 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	//	comment_num = (TextView) head.findViewById(R.)
 	//	redirect_num = (TextView) head.findViewById(R.)
 //		TextView comment_num,redirect_num;//条数
+		retweet_friends = (TextView) head.findViewById(R.id.retweet_friends);
+		retweet_friends.setVisibility(View.GONE);
 		tweet_updated = (TextView) head.findViewById(R.id.tweet_updated);
 		tweet_via = (TextView) head.findViewById(R.id.tweet_via);
 		retweet_times = (TextView) head.findViewById(R.id.retweetTimes);
 		comment_times = (TextView) head.findViewById(R.id.commentTimes);
+		
+		
 		// tvtitle = (TextView) head.findViewById(R.id.tvinfo);
 		// tvtitle.setText(R.string.weiboinfo);
 		// tvReload=(TextView) view.findViewById(R.id.tvReload);
@@ -232,8 +317,9 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 //			COMMENT=(BUTTON) THIS.FINDVIEWBYID(R.ID.DETAIL_COMMENT);
 //			REDIRECT=(BUTTON) THIS.FINDVIEWBYID(R.ID.DETAIL_REDIRECT);
 		
-		
+		//  ------------------------------------
 		View bottom = LayoutInflater.from(this).inflate(R.layout.itembottom, null);
+		
 		// 标题头的布局
 		View title = this.findViewById(R.id.freelook_title_home);
 		titleprogressBar = (ProgressBar) title.findViewById(R.id.titleprogressBar);
@@ -253,9 +339,11 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 		weibolist.addFooterView(bottom);
 		weibolist.addHeaderView(head);
 		
-		adapter = new commentAdapter(this, (List<Comment>) (new ArrayList<Comment>()) );
-		weibolist.setAdapter(adapter);
-		adapter.notifyDataSetChanged();
+//		weibolist.setAdapter(null);
+//		
+//		weibolist.setEmptyView(null);
+//		
+		
 		
 		moreweibo = (LinearLayout) bottom.findViewById(R.id.moreweibo);
 		loginprogress = this.findViewById(R.id.loginprogres);
@@ -264,12 +352,16 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 			@Override
 			public void onClick(View v) {
 				// 请求页面++
-				nowPage++;
-				init(); // 再次请求
+//				if (flag == 1) {
+//					v.setVisibility(View.GONE);
+//				} else {
+					nowPage++;
+					__init(); // 再次请求
 				// 设置进度条可见
-				progressBar.setVisibility(View.VISIBLE);
+					progressBar.setVisibility(View.VISIBLE);
 				// 设置刷新按钮不可见 此时进度条可见
-				btrefaush.setVisibility(View.GONE);
+					btrefaush.setVisibility(View.GONE);
+		//		}
 			}
 		});
 	
@@ -306,17 +398,31 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	}
 	@Override
 	public void init() {
+		nowPage = 0;
+		refresh(START_WEIBO, new ArrayList<Comment>());
+//		HashMap<String, String> param = new HashMap<String, String>();
+//		
+//		param.put("ID", status.getId());
+//		param.put("nowPage", "" + nowPage);
+//		Task task = new Task(Task.TASK_GET_COMMENT, param);
+//		
+//	    MainService.allTask.add(task);
+//		
+//		btrefaush.setVisibility(View.GONE);
+//		titleprogressBar.setVisibility(View.VISIBLE);
+		
+	}
+	
+	
+	public void __init() {
 		HashMap<String, String> param = new HashMap<String, String>();
 		
 		param.put("ID", status.getId());
 		param.put("nowPage", "" + nowPage);
 		Task task = new Task(Task.TASK_GET_COMMENT, param);
-		
 	    MainService.allTask.add(task);
-		
 		btrefaush.setVisibility(View.GONE);
 		titleprogressBar.setVisibility(View.VISIBLE);
-		
 	}
 	// 刷新主页信息
 	public void refresh() {
@@ -345,23 +451,33 @@ public class weiboContent extends Activity implements IWeiboActivity, Runnable {
 	public void refresh(Object... param) {
 		// TODO Auto-generated method stub
 		int flag = ((Integer) param[0]).intValue();
+		List<Comment> nowStatus = (List<Comment>) param[1];
 		switch(flag) {
-		case REFRESH_WEIBO:
+		case START_WEIBO:
 			btrefaush.setVisibility(View.GONE);
 			titleprogressBar.setVisibility(View.GONE);
-			if (nowPage == 1) {
-				loginprogress.setVisibility(View.GONE);
+			loginprogress.setVisibility(View.GONE);
 
-				List<Comment> nowStatus = (List<Comment>) param[1];
 				
-				adapter.addmoreData(nowStatus);
-				adapter.notifyDataSetChanged();
-			}
-			else {
-				progressBar.setVisibility(View.GONE);
-				adapter.addmoreData((List<Comment>) param[1]);
-				adapter.notifyDataSetChanged();
-			}
+			comment_show_num += nowStatus.size();
+		//	if ()
+				
+			adapter = new commentAdapter(this, nowStatus);
+			weibolist.setAdapter(adapter);
+			adapter.notifyDataSetChanged();
+			break;
+		
+		case REFRESH_WEIBO:
+			System.out.println("weiboContent REFRESH_WEIBO");
+			btrefaush.setVisibility(View.GONE);
+			titleprogressBar.setVisibility(View.GONE);
+			progressBar.setVisibility(View.GONE);
+				
+			System.out.println("nowStatus size = " + nowStatus.size());
+			comment_show_num += nowStatus.size();
+			adapter.addmoreData(nowStatus);
+			adapter.notifyDataSetChanged();
+			break;
 		}
 	}
 	

@@ -48,7 +48,7 @@ public class MainActivity extends TabActivity {
 			
 			TabSpec ts2=tab1.newTabSpec(TAB_HotMSG).setIndicator(TAB_HotMSG);
 			//tab子标签跳转到MsgActivity
-			ts2.setContent(new Intent(MainActivity.this, HotWordsActivity.class));
+			ts2.setContent(new Intent(MainActivity.this, HotWordsActivity2.class));
 			tab1.addTab(ts2);//第二个子页
 			
 			TabSpec ts3=tab1.newTabSpec(TAB_SimilarTastes).setIndicator(TAB_SimilarTastes);
@@ -85,7 +85,6 @@ public class MainActivity extends TabActivity {
 						break;
 	               case R.id.radio_button4://更多
 						tab1.setCurrentTabByTag(TAB_MORESET);
-						break;
 					}
 				}
 			});

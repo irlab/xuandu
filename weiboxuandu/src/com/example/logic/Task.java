@@ -15,6 +15,8 @@ public class Task {
 	public static final int TASK_SimilarTastes = 5; // 相似口味
 	public static final int TASK_GET_COMMENT = 6;
 	public static final int TASK_GET_FRESHWEIBO = 7;
+	public static final int TASK_GET_HOT_WORD2 = 8;
+	public static final int TASK_GET_HOT_WORD1 = 9;
 	
 	
 	@SuppressWarnings("rawtypes")

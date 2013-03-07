@@ -25,6 +25,12 @@ public class TaskGetUserHotWords implements RequestListener {
         statusApi.friendsTimeline(nowPage, pageSize, 0, this);
         _mess = mess;
 	}
+	public TaskGetUserHotWords(Long sinceId, Long maxId, Integer pageSize, Integer nowPage, Message mess) {
+        HotWordsAPI statusApi= new HotWordsAPI(Login.accessToken);
+      //  (int now_page, int page_size, int order_type, RequestListener listener)
+        statusApi.friendsTimeline(sinceId, maxId, nowPage, pageSize, 0, this);
+        _mess = mess;
+	}
 	
 	@Override
 	public void onComplete(String response) {

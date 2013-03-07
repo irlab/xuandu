@@ -39,7 +39,7 @@ public class DbAdapter {
 //		    public static final String bmiddle_pic = "_bmiddle_pic";
 //		    public static final String original_pic = "_original_pic";
 //		    public static final String retweeted_status = "_retweeted_status";
-			String weibo_sql = "CREATE TABLE " + WeiboDbAdapter.TABLE_NAME + " (" 
+			String weibo_sql = "create table if not exists " + WeiboDbAdapter.TABLE_NAME + " (" 
 					+ WeiboDbAdapter.id + " INTEGER primary key autoincrement, "
 					+ WeiboDbAdapter.mid + " INTEGER not null, "
 					+ WeiboDbAdapter.comments_count + " INTEGER not null, "
@@ -64,7 +64,7 @@ public class DbAdapter {
 			Log.i(TAG, weibo_sql);
 			db.execSQL(weibo_sql);
 			
-			String comment_sql = "CREATE TABLE " + CommentDbAdapter.TABLE_NAME + " (" 
+			String comment_sql =  "create table if not exists " + CommentDbAdapter.TABLE_NAME + " (" 
 					+ CommentDbAdapter.id + " INTEGER primary key autoincrement, "
 					+ CommentDbAdapter.statusid + " INTEGER not null, "
 					+ CommentDbAdapter.jsonWeibo + " text"

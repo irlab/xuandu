@@ -170,11 +170,20 @@
             <!-- </RelativeLayout> -->
             <!-- 时间 -->
 
+			<TextView
+                android:id="@+id/retweet_friends"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tweet_upload_pic"
+                android:paddingLeft="10.0dip"
+                android:textColor="#ff7d7d7d"
+                android:textSize="14.0sp" />
+			
             <TextView
                 android:id="@+id/tweet_updated"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tweet_upload_pic"
+                android:layout_below="@id/retweet_friends"
                 android:paddingLeft="10.0dip"
                 android:textColor="#ff7d7d7d"
                 android:textSize="14.0sp" />
@@ -184,7 +193,7 @@
                 android:id="@+id/tweet_via"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/tweet_upload_pic"
+                android:layout_below="@id/retweet_friends"
                 android:layout_toRightOf="@id/tweet_updated"
                 android:paddingLeft="10.0dip"
                 android:textColor="#ff7d7d7d"
@@ -204,7 +213,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/retweetTimes"
-                 android:layout_below="@+id/tweet_updated"
+                android:layout_below="@+id/tweet_updated"
                 android:paddingLeft="10.0dip"
                 android:textColor="#ff7d7d7d"
                 android:textSize="16.0sp" 
